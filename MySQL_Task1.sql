@@ -6,12 +6,12 @@ WHERE LENGTH(FirstName) < 6;
 # 2. Вибрати львівські відділення банку.
 SELECT *
 FROM department
-WHERE DepartmentCity LIKE 'Lviv';
+WHERE DepartmentCity = 'Lviv';
 
 # 3. Вибрати клієнтів з вищою освітою та посортувати по прізвищу.
 SELECT *
 FROM client
-WHERE Education LIKE 'high'
+WHERE Education = 'high'
 ORDER BY LastName;
 
 # 4. Виконати сортування у зворотньому порядку над таблицею Заявка і вивести 5 останніх елементів.
@@ -30,7 +30,7 @@ WHERE LastName LIKE '%iv'
 SELECT client.FirstName, client.LastName, d.DepartmentCity
 FROM client
          JOIN department d ON client.Department_idDepartment = d.idDepartment
-WHERE d.DepartmentCity LIKE 'Kyiv';
+WHERE d.DepartmentCity = 'Kyiv';
 
 # 7. Вивести імена клієнтів та їхні номера паспортів, погрупувавши їх за іменами.
 SELECT FirstName, Passport
@@ -41,21 +41,18 @@ GROUP BY FirstName;
 SELECT client.FirstName, client.LastName, a.Sum, a.Currency, a.CreditState
 FROM client
          JOIN application a ON client.idClient = a.Client_idClient
-WHERE a.Currency LIKE 'Gryvnia'
+WHERE a.Currency = 'Gryvnia'
   AND a.CreditState NOT LIKE 'Returned'
   AND a.Sum > 5000;
 
 # 9. Порахувати кількість клієнтів усіх відділень та лише львівських відділень.
-SELECT COUNT(*), d.DepartmentCity
+SELECT COUNT(*)
+FROM client
+UNION
+SELECT COUNT(*)
 FROM client
          JOIN department d ON client.Department_idDepartment = d.idDepartment
-GROUP BY d.DepartmentCity;
-
-SELECT COUNT(*), d.DepartmentCity
-FROM client
-         JOIN department d ON client.Department_idDepartment = d.idDepartment
-WHERE d.DepartmentCity LIKE 'Lviv'
-GROUP BY d.DepartmentCity;
+WHERE d.DepartmentCity = 'Lviv';
 
 
 # 10. Знайти кредити, які мають найбільшу суму для кожного клієнта окремо.
@@ -79,7 +76,7 @@ FROM application;
 SELECT Count(*) as appCountHight
 FROM application
          JOIN client c ON c.idClient = application.Client_idClient
-WHERE c.Education LIKE 'high';
+WHERE c.Education = 'high';
 
 
 # 14. Вивести дані про клієнта, в якого середня сума кредитів найвища.
@@ -145,7 +142,7 @@ SELECT d.DepartmentCity, d.idDepartment
 FROM application
          JOIN client c on c.idClient = application.Client_idClient
          JOIN department d on d.idDepartment = c.Department_idDepartment
-WHERE d.DepartmentCity LIKE 'Lviv'
+WHERE d.DepartmentCity = 'Lviv'
 GROUP BY d.idDepartment
 HAVING SUM(application.Sum) > 5000;
 
@@ -154,13 +151,13 @@ HAVING SUM(application.Sum) > 5000;
 SELECT c.FirstName, c.LastName
 FROM application
          JOIN client c on c.idClient = application.Client_idClient
-WHERE application.CreditState LIKE 'Returned'
+WHERE application.CreditState = 'Returned'
   AND application.Sum > 5000;
 
 # 23. Знайти максимальний неповернений кредит.
 SELECT MAX(Sum)
 FROM application
-WHERE CreditState LIKE 'Not returned';
+WHERE CreditState = 'Not returned';
 
 # 24. Знайти клієнта, сума кредиту якого найменша
 SELECT MIN(Sum), client.FirstName, client.LastName
