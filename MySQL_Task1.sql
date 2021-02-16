@@ -171,6 +171,9 @@ FROM application
 WHERE Sum > (SELECT AVG(Sum) FROM application);
 
 # 26. Знайти клієнтів, які є з того самого міста, що і клієнт, який взяв найбільшу кількість кредитів
+select * from client where City = (select City as co 
+   from client join application a on client.idClient = a.Client_idClient
+   group by Client_idClient order by count(idApplication) desc limit 1);
 
 
 # 27. Знайти місто чувака який набрав найбільше кредитів
